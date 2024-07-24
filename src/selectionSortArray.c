@@ -1,6 +1,6 @@
-#include "../include/selectionSort.h"
+#include "../include/selectionSortArray.h"
 
-void selectionSort(int numbers[], int size) {
+void selectionSortArray(int numbers[], int size) {
     for (int i = 0; i < size; i++) {
         int smallest = numbers[i];
         int smallestIndex = i;

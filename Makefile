@@ -1,7 +1,7 @@
 # Define variables
 CC = gcc
 CFLAGS = -I./include
-SRC = main.c src/selectionSort.c src/insertionSort.c
+SRC = main.c src/selectionSortArray.c src/insertionSortArray.c utils/utilis.c 
 OBJ = $(SRC:.c=.o)
 TARGET = sorting
 

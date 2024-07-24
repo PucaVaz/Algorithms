@@ -1,6 +1,6 @@
-#include "../include/insertionSort.h"
+#include "../include/insertionSortArray.h"
 
-void insertionSort(int numbers[], int size){
+void insertionSortArray(int numbers[], int size){
     for(int i = 0; i < size; i++){
         int j = i;
         while (j > 0 && numbers[j-1] > numbers[j])

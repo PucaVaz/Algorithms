@@ -1,70 +1,101 @@
+// Third party libraries
 #include <stdio.h>
-#include "include/selectionSort.h"
-#include "include/insertionSort.h"
+#include <time.h>
+#include <stdlib.h>
 
-void printArray(int numbers[], int size){
-    // Print each number
-    for(int i = 0; i < size; i++){
-        printf("%d \n", numbers[i]);
-    }
-}
+// In-house libraries
+#include "include/selectionSortArray.h"
+#include "include/insertionSortArray.h"
+#include "include/utils.h"
 
-int main(int argc, char * argv[]) {
-    if (argc < 2) {
-        printf("Usage: %s <filename>\n.", argv[0]);
-        return 1;
-    }
-    // Check if we can open the file
-    //FILE *file = fopen("test.txt", "r");
-    FILE *file = fopen(argv[1], "r");
-    if (file == NULL) {
-        printf("Erro ao ler arquivo. \n");
-        return 1;
-    }
+#define NUM_FILES 12 
+#define NUM_SCENARIOS 2
 
-    // Check the number of numbers in the file.
-    int c;
-    int numbersSize = 1;
+struct node {
+    int value;
+    struct node* next;
+};
 
-    if (file) {
-        while ((c = getc(file)) != EOF){
-            if (c == ' ' || c == '\n' || c == '\t'){
-                
-                numbersSize++;
+int main(void) {
+    // Define each file name
+    const char* filenames[NUM_FILES] = {
+        "instancias-numericas/num.1000.4.in",   "instancias-numericas/num.1000.3.in",   "instancias-numericas/num.1000.2.in",   "instancias-numericas/num.1000.1.in",
+        "instancias-numericas/num.10000.4.in",  "instancias-numericas/num.10000.3.in",  "instancias-numericas/num.10000.2.in",  "instancias-numericas/num.10000.1.in",
+        "instancias-numericas/num.100000.4.in", "instancias-numericas/num.100000.3.in", "instancias-numericas/num.100000.2.in", "instancias-numericas/num.100000.1.in"
+    };
+
+    double timeTaken[NUM_SCENARIOS];
+
+    // Iterate through each file
+    for (int i = 0; i < NUM_FILES; i++) {
+        const char* filename = filenames[i];
+        printf("\n\n");
+        
+        // Iterate through each scenario
+        for (int scenario = 0; scenario < NUM_SCENARIOS; scenario++) {
+            switch (scenario) {
+                case 0: {
+                    printf("Selection Sort with Array: %s\n", filename);
+                    // Scenario 1: Selection Sort with Array
+                    int size;
+                    FILE* file = fopen(filename, "r");
+                    if (file == NULL) {
+                        printf("Error on file read \n");
+                        return 1;
+                    }
+                    // Check the number of numbers in the file.
+                    size = getFileSize(file);
+                    // Return to the beginning of the file.
+                    fseek(file, 0, SEEK_SET);
+                    // Define a variable based on the number of numbers.
+                    int numbers[size];
+                    // Read each number in the file and save it in the array.
+                    readFileToArray(file, numbers, size);
+                    fclose(file);
+                   // Measure time taken to sort
+                    clock_t tic = clock();
+                    selectionSortArray(numbers, size);
+                    clock_t toc = clock();
+                    double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
+                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
+                    timeTaken[scenario] = elapsed;
+                    break;
+                }
+                case 1: {
+                    // Scenario 2: Insertion Sort with Array
+                    printf("Insertion Sort with Array: %s\n", filename);
+                    int size;
+                    FILE* file = fopen(filename, "r");
+                    if (file == NULL) {
+                        printf("Error on file read \n");
+                        return 1;
+                    }
+                    // Check the number of numbers in the file.
+                    size = getFileSize(file);
+                    // Return to the beginning of the file.
+                    fseek(file, 0, SEEK_SET);
+                    // Define a variable based on the number of numbers.
+                    int numbers[size];
+                    // Read each number in the file and save it in the array.
+                    readFileToArray(file, numbers, size);
+                    fclose(file);
+                   // Measure time taken to sort
+                    clock_t tic = clock();
+                    selectionSortArray(numbers, size);
+                    clock_t toc = clock();
+                    double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
+                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
+                    timeTaken[scenario] = elapsed;
+                    break;
+                }
             }
         }
     }
-    // Return to the beginning of the file.
-    fseek(file, 0, SEEK_SET);
 
-    // Define a varible based on the number of numbers.
-    int numbers[numbersSize];
-
-    // Read each number in the file and save it at the vetor.
-    int index = 0;
-    while (index < numbersSize && fscanf(file, "%d", &numbers[index]) == 1) {
-        index++;
+    printf("\nTime taken for each scenario: \n");
+    for (int i = 0; i < NUM_SCENARIOS; i++) {
+        printf("Scenario %d: %f\n", i, timeTaken[i]);
     }
 
-    // Now, with each element saved on the array, we can close the file.  
-    fclose(file);
-
-    // Ask the user which sort algorithm they want to use.
-    printf("\nWhich sort algorithm do you want to use?\n1. Selection sort\n2. Insertion sort\n");
-    int choice;
-    scanf("%d", &choice);
-    switch (choice)
-    {
-    case 1:
-        selectionSort(numbers, numbersSize);
-    case 2:
-        insertionSort(numbers, numbersSize);
-    default:
-        printf("\nYou must choice a option.\n");
-        break;
-    }
-    printf("Print something?\n 1. Yep, unsorted and unsorted array\n 2. Just the unsorted array\n 3. I'm good");
-    scanf("%d", &choice);
-    printArray(numbers, numbersSize);
     return 0;
 }
