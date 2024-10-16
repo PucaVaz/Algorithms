@@ -105,7 +105,7 @@ int main(void) {
                     break;
                 }
             }
-            print("\n");
+            printf("\n");
         }
     }
 
