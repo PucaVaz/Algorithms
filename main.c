@@ -1,4 +1,5 @@
-// Third party libraries
+// main.c
+// Third-party libraries
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -6,10 +7,11 @@
 // In-house libraries
 #include "include/selectionSortArray.h"
 #include "include/insertionSortArray.h"
+#include "include/mergeSortArray.h"
 #include "include/utils.h"
 
-#define NUM_FILES 12 
-#define NUM_SCENARIOS 2
+#define NUM_FILES 12
+#define NUM_SCENARIOS 3  
 
 struct node {
     int value;
@@ -30,29 +32,25 @@ int main(void) {
     for (int i = 0; i < NUM_FILES; i++) {
         const char* filename = filenames[i];
         printf("\n\n");
-        
+
         // Iterate through each scenario
         for (int scenario = 0; scenario < NUM_SCENARIOS; scenario++) {
             switch (scenario) {
                 case 0: {
+                    // Scenario 1: Selection Sort
                     printf("Selection Sort with Array: %s\n", filename);
-                    // Scenario 1: Selection Sort with Array
                     int size;
                     FILE* file = fopen(filename, "r");
                     if (file == NULL) {
                         printf("Error on file read \n");
                         return 1;
                     }
-                    // Check the number of numbers in the file.
                     size = getFileSize(file);
-                    // Return to the beginning of the file.
                     fseek(file, 0, SEEK_SET);
-                    // Define a variable based on the number of numbers.
                     int numbers[size];
-                    // Read each number in the file and save it in the array.
                     readFileToArray(file, numbers, size);
                     fclose(file);
-                   // Measure time taken to sort
+
                     clock_t tic = clock();
                     selectionSortArray(numbers, size);
                     clock_t toc = clock();
@@ -62,7 +60,7 @@ int main(void) {
                     break;
                 }
                 case 1: {
-                    // Scenario 2: Insertion Sort with Array
+                    // Scenario 2: Insertion Sort
                     printf("Insertion Sort with Array: %s\n", filename);
                     int size;
                     FILE* file = fopen(filename, "r");
@@ -70,18 +68,36 @@ int main(void) {
                         printf("Error on file read \n");
                         return 1;
                     }
-                    // Check the number of numbers in the file.
                     size = getFileSize(file);
-                    // Return to the beginning of the file.
                     fseek(file, 0, SEEK_SET);
-                    // Define a variable based on the number of numbers.
                     int numbers[size];
-                    // Read each number in the file and save it in the array.
                     readFileToArray(file, numbers, size);
                     fclose(file);
-                   // Measure time taken to sort
                     clock_t tic = clock();
-                    selectionSortArray(numbers, size);
+                    insertionSortArray(numbers, size); 
+                    clock_t toc = clock();
+                    double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
+                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
+                    timeTaken[scenario] = elapsed;
+                    break;
+                }
+                case 2: {
+                    // Scenario 3: Merge Sort
+                    printf("Merge Sort with Array: %s\n", filename);
+                    int size;
+                    FILE* file = fopen(filename, "r");
+                    if (file == NULL) {
+                        printf("Error on file read \n");
+                        return 1;
+                    }
+                    size = getFileSize(file);
+                    fseek(file, 0, SEEK_SET);
+                    int numbers[size];
+                    readFileToArray(file, numbers, size);
+                    fclose(file);
+
+                    clock_t tic = clock();
+                    mergeSortArray(numbers, size); 
                     clock_t toc = clock();
                     double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
                     printf("Time taken for %s: %f seconds\n", filename, elapsed);
@@ -89,6 +105,7 @@ int main(void) {
                     break;
                 }
             }
+            print("\n");
         }
     }
 
