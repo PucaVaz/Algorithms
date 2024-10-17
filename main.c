@@ -1,23 +1,14 @@
-// main.c
-// Third-party libraries
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-
-// In-house libraries
 #include "include/selectionSortArray.h"
 #include "include/insertionSortArray.h"
 #include "include/mergeSortArray.h"
 #include "include/quickSortArray.h"
 #include "include/utils.h"
 
-#define NUM_FILES 12
-#define NUM_SCENARIOS 4 
-
-struct node {
-    int value;
-    struct node* next;
-};
+#define NUM_FILES 12 
+#define NUM_SCENARIOS 4
 
 int main(void) {
     const char* filenames[NUM_FILES] = {
@@ -26,13 +17,13 @@ int main(void) {
         "instancias-num/num.100000.1.in", "instancias-num/num.100000.2.in", "instancias-num/num.100000.3.in", "instancias-num/num.100000.4.in"
     };
 
-    double timeTaken[NUM_SCENARIOS];
+    double totalTimeTaken[NUM_SCENARIOS] = {0};  
 
     for (int i = 0; i < NUM_FILES; i++) {
         const char* filename = filenames[i];
-        printf("\n\n");
+        printf("\nProcessing file: %s\n", filename);
 
-        for (int scenario = 0; scenario < NUM_SCENARIOS; scenario++) {
+        for (int scenario = 2; scenario < NUM_SCENARIOS; scenario++) {
             switch (scenario) {
                 case 0: {
                     // Scenario 1: Selection Sort
@@ -53,8 +44,9 @@ int main(void) {
                     selectionSortArray(numbers, size);
                     clock_t toc = clock();
                     double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
-                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
-                    timeTaken[scenario] = elapsed;
+                    printf("Time taken: %f seconds\n", elapsed);
+                    totalTimeTaken[scenario] += elapsed;  
+                    printf("\n");
                     break;
                 }
                 case 1: {
@@ -73,11 +65,12 @@ int main(void) {
                     fclose(file);
 
                     clock_t tic = clock();
-                    insertionSortArray(numbers, size); 
+                    insertionSortArray(numbers, size);
                     clock_t toc = clock();
                     double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
-                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
-                    timeTaken[scenario] = elapsed;
+                    printf("Time taken: %f seconds\n", elapsed);
+                    totalTimeTaken[scenario] += elapsed; 
+                    printf("\n");
                     break;
                 }
                 case 2: {
@@ -96,11 +89,12 @@ int main(void) {
                     fclose(file);
 
                     clock_t tic = clock();
-                    mergeSortArray(numbers, size); 
+                    mergeSortArray(numbers, size);
                     clock_t toc = clock();
                     double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
-                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
-                    timeTaken[scenario] = elapsed;
+                    printf("Time taken: %f seconds\n", elapsed);
+                    totalTimeTaken[scenario] += elapsed;
+                    printf("\n");
                     break;
                 }
                 case 3: {
@@ -119,21 +113,20 @@ int main(void) {
                     fclose(file);
 
                     clock_t tic = clock();
-                    quickSortArray(numbers, size);  
+                    quickSortArray(numbers, size);
                     clock_t toc = clock();
                     double elapsed = (double)(toc - tic) / CLOCKS_PER_SEC;
-                    printf("Time taken for %s: %f seconds\n", filename, elapsed);
-                    timeTaken[scenario] = elapsed;
+                    printf("Time taken: %f seconds\n", elapsed);
+                    totalTimeTaken[scenario] += elapsed; 
+                    printf("\n");
                     break;
                 }
             }
-            printf("\n");
         }
     }
-
-    printf("\nTime taken for each scenario: \n");
+    printf("\nTotal time taken for each scenario:\n");
     for (int i = 0; i < NUM_SCENARIOS; i++) {
-        printf("Scenario %d: %f\n", i, timeTaken[i]);
+        printf("Scenario %d total time: %f seconds\n", i, totalTimeTaken[i]);
     }
 
     return 0;

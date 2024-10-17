@@ -52,5 +52,5 @@ void mergeSort(int numbers[], int left, int right) {
 }
 
 void mergeSortArray(int numbers[], int size) {
-    mergeSort(numbers, 0, size - 1);
+    mergeSort(numbers,  0, size - 1);
 }

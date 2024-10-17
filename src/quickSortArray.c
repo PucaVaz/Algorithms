@@ -1,23 +1,35 @@
 #include "../include/quickSortArray.h"
 
-int partition(int numbers[], int left, int right) {
-    int pivot = numbers[right];  
-    int i = left - 1;  
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
-    for (int j = left; j < right; j++) {
-        if (numbers[j] <= pivot) {
+int partition(int numbers[], int left, int right) {
+    int middle = left + (right - left) / 2;
+    int pivot = numbers[middle];  
+
+    int i = left;
+    int j = right;
+
+    while (i <= j) {
+        while (numbers[i] < pivot) {
             i++;
-            int temp = numbers[i];
-            numbers[i] = numbers[j];
-            numbers[j] = temp;
+        }
+
+        while (numbers[j] > pivot) {
+            j--;
+        }
+
+        if (i <= j) {
+            swap(&numbers[i], &numbers[j]);
+            i++;
+            j--;
         }
     }
 
-    int temp = numbers[i + 1];
-    numbers[i + 1] = numbers[right];
-    numbers[right] = temp;
-
-    return i + 1;
+    return i;  
 }
 
 void quickSort(int numbers[], int left, int right) {
@@ -25,7 +37,7 @@ void quickSort(int numbers[], int left, int right) {
         int partitionIndex = partition(numbers, left, right);  
 
         quickSort(numbers, left, partitionIndex - 1);  
-        quickSort(numbers, partitionIndex + 1, right);
+        quickSort(numbers, partitionIndex, right);  
     }
 }
 
